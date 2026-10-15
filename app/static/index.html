@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CoRun Onboarding Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f2f6f3;color:#0d2544}
+header{background:#0d2544;color:#fff;padding:14px 28px;display:flex;align-items:center;gap:16px}header img{height:38px;background:#fff;border-radius:8px;padding:4px 8px}
+header a{color:#b8c6d8;margin-left:auto;font-size:14px}
+main{max-width:1100px;margin:0 auto;padding:24px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}.tab{padding:10px 18px;border-radius:9px;background:#fff;border:1px solid #d8e0e9;cursor:pointer;font-weight:600}.tab.on{background:#c2410c;color:#fff;border-color:#c2410c}
+.card{background:#fff;border:1px solid #d8e0e9;border-radius:14px;padding:20px;margin-bottom:14px}
+input,textarea{font:inherit;border:1px solid #cad5e2;border-radius:9px;padding:11px 13px;background:#fafbfc;width:100%}
+button{font:inherit;background:#c2410c;color:#fff;border:0;border-radius:9px;padding:11px 22px;font-weight:600;cursor:pointer}
+.row{display:flex;gap:10px}.row input{flex:1}
+.k{font-size:11px;color:#627080;text-transform:uppercase;letter-spacing:.4px}.v{font-size:17px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.mini{background:#fafbfc;border:1px solid #d8e0e9;border-radius:10px;padding:11px}
+.score{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}.score div{width:94px;height:94px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;font-weight:800}
+.bar{height:8px;background:#eef3f9;border-radius:5px;overflow:hidden}.bar b{display:block;height:100%;background:#22604b}
+.sev{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;margin-right:8px}.high{background:#fde8e6;color:#b42318}.medium{background:#fff4e5;color:#c2410c}
+.est{display:inline-block;background:#fff4e5;color:#c2410c;border:1px dashed #c2410c;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px;border-bottom:1px solid #eef3f9;text-align:left}th{font-size:11px;color:#627080;text-transform:uppercase}
+.muted{color:#627080;font-size:13px}.hide{display:none}.chip{display:inline-block;background:#edf6f1;color:#22604b;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;margin:2px;cursor:pointer}
+</style></head><body>
+<header><img src="/static/logo.png"><b>Onboarding demo — live public FMCSA data</b><a href="/docs">API docs →</a></header>
+<main>
+<div class="tabs"><div class="tab on" data-t="carrier">Carrier</div><div class="tab" data-t="agency">Insurance agency</div></div>
+<section id="carrier">
+ <div class="card"><div class="row"><input id="q" placeholder="USDOT (e.g. 44110) or MC-1515"><button onclick="lookup()">Look up</button></div>
+ <div class="muted" style="margin-top:8px">Try: <span class="chip" onclick="go('44110')">44110</span><span class="chip" onclick="go('1515240')">1515240</span><span class="chip" onclick="go('MC-1515')">MC-1515</span></div></div>
+ <div id="cout"></div>
+</section>
+<section id="agency" class="hide">
+ <div class="card"><div class="k" style="margin-bottom:6px">Book of business — one DOT or MC per line</div><textarea id="book" rows="5">44110
+1515240
+5728756</textarea><div style="margin-top:10px"><button onclick="book()">Analyze book</button></div></div>
+ <div id="bout"></div>
+ <div class="card"><div class="k" style="margin-bottom:6px">Find carriers by insurer on file</div><div class="row"><input id="ins" value="Progressive"><button onclick="insurer()">Search</button></div><div id="iout" style="margin-top:12px"></div></div>
+</section>
+<p class="muted">Data: FMCSA public datasets (data.transportation.gov, Motus) · Fleet Health Score is a v0 draft composite, not an FMCSA rating · Renewal dates are ESTIMATES (FMCSA filings have no expiration date).</p>
+</main>
+<script>
+const $=id=>document.getElementById(id), esc=s=>String(s??'—').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x==t));['carrier','agency'].forEach(s=>$(s).classList.toggle('hide',s!=t.dataset.t))});
+const load=el=>el.innerHTML='<div class="card muted">Loading live FMCSA data… (first lookup can take a few seconds)</div>';
+async function api(u,o){const t=performance.now();const r=await fetch(u,o);const j=await r.json();if(!r.ok)throw new Error(j.detail||r.status);j._ms=Math.round(performance.now()-t);return j}
+function go(v){$('q').value=v;lookup()}
+const col=s=>s>=85?'#22604b':s>=70?'#315c4d':s>=50?'#c2410c':'#b42318';
+async function lookup(){const v=$('q').value.trim();if(!v)return;load($('cout'));
+ try{const p=await api(/^\d+$/.test(v)?`/carriers/${v}`:`/carriers/mc/${encodeURIComponent(v)}`);render(p)}catch(e){$('cout').innerHTML=`<div class="card">Not found: ${esc(e.message)}</div>`}}
+function render(p){const f=p.fleet_health,i=p.inspections_24mo,id=p.identity;
+ const ins=p.insurance.active_or_pending.map(x=>`<tr><td>${esc(x.insurer)}</td><td>${esc(x.form)}</td><td>$${(x.max_coverage||0).toLocaleString()}</td><td>${esc(x.effective_date)}</td><td>${x.estimated_renewal?esc(x.estimated_renewal.date)+' <span class="est">ESTIMATE</span>':'—'}</td></tr>`).join('')||'<tr><td colspan=5>No active/pending filing</td></tr>';
+ $('cout').innerHTML=`<div class="card"><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+ <div class="score" style="background:conic-gradient(${col(f.score)} 0 ${f.score}%,#dce7df ${f.score}% 100%)"><div>${f.score}<span class="muted" style="font-size:11px">/100</span></div></div>
+ <div style="flex:1;min-width:260px"><div style="font-size:22px;font-weight:800">${esc(id.legal_name)}</div><div class="muted">${id.dba_name?'DBA '+esc(id.dba_name)+' · ':''}USDOT ${p.dot_number} · ${id.dockets.map(d=>esc(d.docket)).join(', ')||'no docket'} · ${esc(id.physical_address.city)}, ${esc(id.physical_address.state)}</div>
+ <div style="margin-top:6px"><span class="chip">USDOT ${esc(id.usdot_status)}</span><span class="chip">Authority ${p.authority.any_active?'active':'not active / none'}</span><span class="chip">BOC-3 ${p.boc3.on_file?'✓':'✗'}</span></div>
+ <div class="muted" style="margin-top:4px">Fleet Health Score ${esc(f.version)} · loaded in ${p._ms} ms</div></div></div></div>
+ <div class="grid" style="margin-bottom:14px">${[['Power units',p.fleet.power_units],['Drivers',p.fleet.total_drivers],['MCS-150',p.mcs150.date],['Mileage',(p.mcs150.mileage||0).toLocaleString()],['Vehicle OOS',`${i.vehicle.oos_rate??'—'}% <span class="muted">(nat'l ${i.vehicle.national_avg}%)</span>`],['Driver OOS',`${i.driver.oos_rate??'—'}% <span class="muted">(nat'l ${i.driver.national_avg}%)</span>`],['Inspections 24 mo',i.total],['Crashes 24 mo',`${p.crashes_24mo.total} <span class="muted">(${p.crashes_24mo.fatal} fatal)</span>`]].map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>
+ <div class="grid" style="grid-template-columns:1fr 1fr"><div class="card"><b>Score breakdown</b>${f.factors.map(x=>`<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${esc(x.factor)}</span><b>${x.points} / ${x.max}</b></div><div class="bar"><b style="width:${100*x.points/x.max}%"></b></div><div class="muted">${esc(x.detail)}</div></div>`).join('')}</div>
+ <div class="card"><b>Issues found (${p.issues.length})</b>${p.issues.map(x=>`<div style="margin-top:10px"><span class="sev ${x.severity}">${x.severity.toUpperCase()}</span><b>${esc(x.title)}</b> ${x.estimated?'<span class="est">ESTIMATE</span>':''}<div class="muted">${esc(x.detail)}</div></div>`).join('')||'<div class="muted" style="margin-top:8px">No issues detected 🎉</div>'}</div></div>
+ <div class="card"><b>Insurance on file</b><table><tr><th>Insurer</th><th>Form</th><th>Coverage</th><th>Effective</th><th>Est. renewal</th></tr>${ins}</table></div>`}
+async function book(){const ids=$('book').value.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);load($('bout'));
+ try{const body=JSON.stringify({identifiers:ids,renewal_window_days:365});const opt={method:'POST',headers:{'content-type':'application/json'},body};
+ const [b,r]=await Promise.all([api('/agency/book',opt),api('/agency/renewals',opt)]);const R=b.rollup;
+ $('bout').innerHTML=`<div class="grid" style="margin-bottom:14px">${[['Carriers matched',`${R.matched}/${R.carriers_submitted}`],['Power units',R.total_power_units],['Drivers',R.total_drivers],['Avg Fleet Health',R.avg_fleet_health],['With high issues',R.carriers_with_high_issues]].map(([k,v])=>`<div class="mini"><div class="k">${k}</div><div class="v">${v??'—'}</div></div>`).join('')}</div>
+ <div class="card"><b>Ranked by risk</b> <span class="muted">(${b._ms} ms)</span><table><tr><th>Carrier</th><th>DOT</th><th>Units</th><th>Score</th><th>Veh OOS</th><th>Top issue</th></tr>${b.carriers_by_risk.map(m=>`<tr><td>${esc(m.legal_name)}</td><td>${m.dot_number}</td><td>${m.power_units}</td><td><b style="color:${col(m.fleet_health)}">${m.fleet_health}</b></td><td>${m.vehicle_oos_rate??'—'}%</td><td>${m.issues[0]?`<span class="sev ${m.issues[0].severity}">${m.issues[0].severity}</span>${esc(m.issues[0].title)}`:'—'}</td></tr>`).join('')}</table>${b.unmatched.length?`<div class="muted">Not matched: ${b.unmatched.map(esc).join(', ')}</div>`:''}</div>
+ <div class="card"><b>Renewal radar</b> <span class="est">ESTIMATED</span> <div class="muted">${esc(r.method)}</div><div class="grid" style="margin:10px 0">${Object.entries(r.buckets).map(([k,v])=>`<div class="mini"><div class="k">${k} days</div><div class="v">${v}</div></div>`).join('')}</div><table><tr><th>Carrier</th><th>Insurer</th><th>Form</th><th>Est. renewal</th><th>Days</th></tr>${r.renewals.map(x=>`<tr><td>${esc(x.legal_name)}</td><td>${esc(x.insurer)}</td><td>${esc(x.form)}</td><td>${esc(x.estimated_renewal)}</td><td>${x.days_until}</td></tr>`).join('')}</table></div>`}catch(e){$('bout').innerHTML=`<div class="card">Error: ${esc(e.message)}</div>`}}
+async function insurer(){const n=$('ins').value.trim();$('iout').innerHTML='<span class="muted">Searching…</span>';
+ try{const s=await api(`/insurers/search?name=${encodeURIComponent(n)}&limit=25`);$('iout').innerHTML=`<div class="muted">${s.count} carriers (first 25, newest filings first) · ${s._ms} ms</div><table><tr><th>DOT</th><th>Docket</th><th>Insurer</th><th>Form</th><th>Effective</th><th></th></tr>${s.carriers.map(c=>{const f=c.filings[0];return `<tr><td>${c.dot_number}</td><td>${esc(c.docket)}</td><td>${esc(f.insurer)}</td><td>${esc(f.form)}</td><td>${esc(f.effective_date)}</td><td><span class="chip" onclick="document.querySelector('[data-t=carrier]').click();go('${c.dot_number}')">Profile</span></td></tr>`}).join('')}</table>`}catch(e){$('iout').innerHTML='Error: '+esc(e.message)}}
+</script></body></html>

@@ -130,3 +130,17 @@ def insurer_search(name: str = Query(..., min_length=3), limit: int = Query(100,
     carriers = list(by_dot.values())[:limit]
     return {"query": name, "carriers": carriers, "count": len(carriers),
             "source": "FMCSA Motus Insur (active/pending filings)"}
+
+
+# ---- demo page ----
+from pathlib import Path
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+_static = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=_static), name="static")
+
+
+@app.get("/", include_in_schema=False)
+def demo_page():
+    return FileResponse(_static / "index.html")
