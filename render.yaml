@@ -1,0 +1,14 @@
+# Render Blueprint: free Docker web service for the onboarding API.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: corun-onboarding-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # Optional. Leave blank in the dashboard; the API runs on public FMCSA data without them.
+      - key: SOCRATA_APP_TOKEN
+        sync: false
+      - key: FMCSA_WEBKEY
+        sync: false
