@@ -76,6 +76,7 @@ def agency_book(book: Book):
                         "vehicle_oos_rate": p["inspections_24mo"]["vehicle"]["oos_rate"],
                         "driver_oos_rate": p["inspections_24mo"]["driver"]["oos_rate"]})
     scores = [m["fleet_health"] for m in matched]
+    vrates = [m["vehicle_oos_rate"] for m in matched if isinstance(m["vehicle_oos_rate"], (int, float))]
     rollup = {
         "carriers_submitted": len(book.identifiers), "matched": len(matched), "unmatched": len(unmatched),
         "total_power_units": sum(m["power_units"] for m in matched),
@@ -84,6 +85,10 @@ def agency_book(book: Book):
         "carriers_with_high_issues": sum(1 for m in matched if any(i["severity"] == "high" for i in m["issues"])),
         "health_distribution": {b: sum(1 for s in scores if lo <= s < hi) for b, lo, hi in
                                 [("<50", 0, 50), ("50-69", 50, 70), ("70-84", 70, 85), ("85+", 85, 101)]},
+        "vehicle_oos_avg": round(sum(vrates) / len(vrates), 2) if vrates else None,
+        "vehicle_oos_n": len(vrates),
+        "vehicle_oos_national": config.NATIONAL_OOS["vehicle"],
+        "national_oos_as_of": config.NATIONAL_OOS["as_of"],
     }
     matched.sort(key=lambda m: m["fleet_health"])
     return {"rollup": rollup, "carriers_by_risk": matched, "unmatched": unmatched, "duplicates": duplicates}
@@ -142,5 +147,20 @@ app.mount("/static", StaticFiles(directory=_static), name="static")
 
 
 @app.get("/", include_in_schema=False)
+def landing_page():
+    return FileResponse(_static / "landing.html")
+
+
+@app.get("/onboarding", include_in_schema=False)
+def carrier_onboarding_page():
+    return FileResponse(_static / "onboarding.html")
+
+
+@app.get("/agency/onboarding", include_in_schema=False)
+def agency_onboarding_page():
+    return FileResponse(_static / "agency.html")
+
+
+@app.get("/demo", include_in_schema=False)
 def demo_page():
     return FileResponse(_static / "index.html")

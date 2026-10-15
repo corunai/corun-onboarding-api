@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corun-page" content="agency-onboarding">
+  <title>Agency onboarding · CoRun</title>
+  <link rel="icon" href="/static/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <a class="brand" href="/"><img src="/static/logo.png" alt="CoRun.AI"></a>
+      <p class="aside-k">CoRun for agencies</p>
+      <p class="aside-sub">Public FMCSA filings for the carriers you paste in. Renewal dates are estimates.</p>
+      <nav class="steps" id="steps">
+        <button type="button" data-step="0"><i>1</i><span>Agency account</span></button>
+        <button type="button" data-step="1"><i>2</i><span>Verify phone</span></button>
+        <button type="button" data-step="2"><i>3</i><span>Add your book</span></button>
+        <button type="button" data-step="3"><i>4</i><span>Book risk dashboard</span></button>
+        <button type="button" data-step="4"><i>5</i><span>Renewal radar</span></button>
+        <button type="button" data-step="5"><i>6</i><span>Prospect finder</span></button>
+        <button type="button" data-step="6"><i>7</i><span>Invite carriers</span></button>
+        <button type="button" data-step="7"><i>8</i><span>You're live</span></button>
+      </nav>
+      <p class="sidefoot">Saved in this browser only. No email is sent. CoRun Cargo and Green Miles are coming soon and are not part of this setup.</p>
+    </aside>
+    <div class="maincol">
+      <div class="stage">
+        <p class="kicker" id="kicker">Step 1 of 8</p>
+        <div class="bar" aria-hidden="true"><b id="prog"></b></div>
+        <div class="head">
+          <h1 id="title">Agency account</h1>
+          <span class="pill" id="pill" hidden>DEMO</span>
+        </div>
+        <p class="sub" id="sub"></p>
+        <div id="view"></div>
+      </div>
+      <div class="dock">
+        <button type="button" class="textbtn" id="back">← Back</button>
+        <div class="dock-right">
+          <button type="button" class="textbtn" id="alt" hidden></button>
+          <button type="button" class="primary" id="next">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="veil" id="veil" hidden>
+    <div class="veil-card"><div class="spin"></div><p id="veilmsg">Loading public FMCSA records…</p></div>
+  </div>
+  <script src="/static/ui.js"></script>
+  <script src="/static/agency.js"></script>
+</body>
+</html>

@@ -26,5 +26,6 @@ def test_mc_lookup(client):
 def test_book_and_insurers(client):
     b = client.post("/agency/book", json={"identifiers": ["44110", "MC-1515", "notanumber"]}).json()
     assert b["rollup"]["matched"] == 1 and b["duplicates"][0]["dot_number"] == "44110" and b["unmatched"] == ["notanumber"]
+    assert b["rollup"]["vehicle_oos_national"] == 22.26 and b["rollup"]["vehicle_oos_n"] >= 1
     s = client.get("/insurers/search", params={"name": "progressive", "limit": 5}).json()
     assert s["count"] > 0

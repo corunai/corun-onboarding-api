@@ -16,6 +16,10 @@ docker build -t corun-onboarding-api . && docker run -p 8000:8000 corun-onboardi
 ## Endpoints
 | Method | Path | What it returns |
 |---|---|---|
+| GET | `/` | onboarding start: carrier or insurance agent |
+| GET | `/onboarding` | carrier setup (account, live FMCSA check, checklist) |
+| GET | `/agency/onboarding` | agency setup (book, risk, estimated renewals) |
+| GET | `/demo` | earlier single-page carrier/agency data demo |
 | GET | `/health` | status, plus whether a QCMobile key and Socrata token are configured |
 | GET | `/carriers/{dot}` | unified profile + Fleet Health Score + issues |
 | GET | `/carriers/mc/{mc}` | same, looked up by MC/MX/FF docket (`1515`, `MC-1515`) |
