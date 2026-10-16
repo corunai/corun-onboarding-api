@@ -1,0 +1,15 @@
+{
+ "source_file": "Loads_2026-10-15.xlsx",
+ "built_at": "2026-10-15T21:25",
+ "loads_in_export": 682,
+ "in_transit": 50,
+ "completed": 628,
+ "deliveries_scored": 214,
+ "on_time_pct": 63.1,
+ "definition": "on time = 'Arrived' timestamp at or before the end of the delivery appointment window (no grace)",
+ "completed_miles": 748829,
+ "window_days": 29,
+ "pickup_from": "Sep 16",
+ "pickup_to": "Oct 14",
+ "line": "As of this morning, True Nation has 50 loads on the road, and 628 loads delivered since Sep 16, about 749 thousand miles."
+}
