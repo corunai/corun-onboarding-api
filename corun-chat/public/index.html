@@ -1,53 +1,450 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chat with CoRun.ai</title><link rel="icon" href="/logo-site.png">
-<link rel="preconnect" href="https://rsms.me/"><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Chat with Violette · CoRun.ai</title>
+<link rel="icon" href="/logo-site.png">
+<link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 <style>
-:root{--navy:#0D2544;--ink:#142338;--orange:#F77316;--green:#315C4D;--gray:#627080}
-*{box-sizing:border-box}html,body{height:100%;margin:0}
-body{font-family:InterVariable,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;display:flex;flex-direction:column}
-header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;gap:14px}
-header img{height:36px;width:auto}header .t{color:#fff;font-weight:550;font-size:15px;margin-left:auto;text-align:right}
-header .t small{display:block;color:#c9d3df;font-weight:400;font-size:12px}
-main{flex:1;overflow-y:auto;padding:24px 16px}.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.intro{text-align:center;color:var(--gray);margin:8px 0 12px}.intro h1{color:var(--navy);font-weight:650;font-size:24px;margin:0 0 6px}
-.m{max-width:85%;padding:12px 16px;border-radius:16px;line-height:1.5;font-size:15px;white-space:pre-wrap;word-wrap:break-word}
-.a{background:#F3F5F8;align-self:flex-start;border-bottom-left-radius:4px}.u{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.n{font-size:12px;font-weight:600;color:var(--orange);margin-bottom:4px}
-.typing{color:var(--gray);font-style:italic}
-form{border-top:1px solid #e6e9ee;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#fff}
-.row{max-width:760px;margin:0 auto;display:flex;gap:8px}
-textarea{flex:1;resize:none;font:inherit;font-size:16px;padding:12px 14px;border:1px solid #d5dbe3;border-radius:12px;outline:none;max-height:140px}
-textarea:focus{border-color:var(--navy)}
-button{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:0 20px;font:inherit;font-weight:600;cursor:pointer}
-button:disabled{opacity:.5}#mic,#mute{background:var(--navy);padding:0 14px;font-size:18px}#mic.on{background:var(--orange);animation:p 1s infinite}@keyframes p{50%{box-shadow:0 0 0 6px rgba(247,115,22,.3)}}#vnote{max-width:760px;margin:4px auto 0;font-size:12px;color:var(--gray)}footer{text-align:center;font-size:11px;color:var(--gray);padding:0 0 8px}
-</style></head><body>
-<header><img src="/logo-reversed.png" alt="CoRun.AI"><div class="t">Violette<small>AI Operations Orchestrator</small></div></header>
-<main id="main"><div class="wrap" id="thread"><div class="intro"><h1>Run your fleet with confidence.</h1>Ask CoRun anything. Violette is here to help.</div></div></main>
-<form id="f"><div class="row"><textarea id="q" rows="1" placeholder="Ask anything about CoRun…" autofocus></textarea><button type="button" id="mic" title="Talk to Violette" aria-label="Talk">🎤</button><button type="button" id="mute" title="Mute voice replies" aria-label="Mute">🔊</button><button id="b">Send</button></div><div id="vnote"></div></form>
-<footer>Violette is one of CoRun's AI software agents. Driven by intelligence. Built around people.</footer>
+:root{
+  --navy:#0D2544;
+  --ink:#142338;
+  --orange:#F77316;
+  --green:#315C4D;
+  --gray:#627080;
+  --bg:#F2F6F3;
+  --line:#D8E0E9;
+  --user:#E6EEF5;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  overflow:hidden;
+  font-family:InterVariable,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-weight:400;
+  color:var(--ink);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+button,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+header{
+  flex:none;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"logo action" "tag action";
+  align-items:center;
+  column-gap:12px;
+  row-gap:2px;
+  background:var(--navy);
+  color:#fff;
+  padding:calc(12px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 12px calc(16px + env(safe-area-inset-left));
+}
+header img{grid-area:logo;height:28px;width:auto;max-width:48vw;display:block}
+.tag{grid-area:tag;margin:0;font-size:12px;font-weight:400;line-height:1.3;color:#D7E0EA}
+#new{grid-area:action}
+#new{
+  appearance:none;
+  background:transparent;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;
+  min-height:40px;
+  padding:8px 14px;
+  font-size:14px;
+  font-weight:550;
+  white-space:nowrap;
+}
+#new:hover{background:rgba(255,255,255,.1)}
+h1{
+  position:absolute;
+  width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+main{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:8px calc(16px + env(safe-area-inset-right)) 16px calc(16px + env(safe-area-inset-left));
+}
+.col{max-width:760px;width:100%;margin:0 auto;flex:1;display:flex;flex-direction:column}
+.empty{margin:auto;width:min(100%,520px);text-align:center;padding:28px 4px 36px}
+.empty img{height:40px;width:auto;display:block;margin:0 auto}
+.greet{
+  margin:18px 0 0;
+  font-size:22px;
+  font-weight:550;
+  letter-spacing:-.02em;
+  line-height:1.35;
+  color:var(--navy);
+  text-wrap:balance;
+}
+.chips{display:flex;flex-flow:row wrap;justify-content:center;gap:8px;margin-top:22px}
+.chips button{
+  appearance:none;
+  text-align:center;
+  max-width:100%;
+  background:#fff;
+  color:var(--navy);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:14px;
+  font-weight:500;
+  line-height:1.35;
+}
+.chips button:hover{border-color:var(--navy);background:#F8FBFA}
+#thread{display:flex;flex-direction:column;gap:18px;padding:18px 0 8px}
+.empty[hidden],#thread[hidden]{display:none !important}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{justify-content:flex-end}
+.avatar{
+  flex:none;
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--green);color:#fff;
+  font-size:13px;font-weight:650;line-height:1;
+}
+.bubble{
+  position:relative;
+  max-width:min(85%,520px);
+  margin:0;
+  background:var(--user);
+  color:var(--ink);
+  border-radius:16px 16px 4px 16px;
+  padding:10px 14px;
+  font-size:15.5px;
+  line-height:1.5;
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+.body{min-width:0;flex:1;padding-top:3px;font-size:15.5px;line-height:1.55;overflow-wrap:break-word}
+.body.err{color:var(--gray)}
+.md p{margin:0 0 .65em}
+.md ul,.md ol{margin:0 0 .65em;padding-left:1.25em}
+.md li+li{margin-top:.25em}
+.md :last-child{margin-bottom:0}
+.md strong{font-weight:650}
+.md a{color:var(--navy);text-underline-offset:2px}
+.md a:hover{color:var(--green)}
+.typing{align-items:center}
+.dots{display:flex;gap:5px;height:28px;align-items:center}
+.dots span{
+  width:7px;height:7px;border-radius:50%;background:var(--gray);
+  animation:blink 1.2s infinite ease-in-out;
+}
+.dots span:nth-child(2){animation-delay:.15s}
+.dots span:nth-child(3){animation-delay:.3s}
+@keyframes blink{
+  0%,80%,100%{opacity:.3;transform:translateY(0)}
+  40%{opacity:1;transform:translateY(-2px)}
+}
+.dock{
+  flex:none;
+  border-top:1px solid rgba(13,37,68,.08);
+  background:var(--bg);
+  padding:10px calc(12px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+}
+.composer{
+  max-width:760px;
+  margin:0 auto;
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:6px 6px 6px 16px;
+}
+.composer:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,37,68,.16)}
+textarea{
+  flex:1;
+  display:block;
+  width:100%;
+  border:0;
+  resize:none;
+  margin:0;
+  padding:9px 0;
+  min-height:24px;
+  max-height:160px;
+  background:transparent;
+  font-size:16px;
+  line-height:1.45;
+  outline:none;
+}
+textarea::placeholder{color:var(--gray)}
+#send{
+  flex:none;
+  width:44px;height:44px;
+  border:0;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--orange);
+  color:var(--navy);
+}
+#send:hover:not(:disabled){filter:brightness(.96)}
+#send:disabled{background:#D5DCE3;color:#5C6B7A;cursor:default}
+footer{
+  max-width:760px;
+  margin:8px auto 0;
+  text-align:center;
+  font-size:12px;
+  line-height:1.4;
+  color:var(--gray);
+}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+header :focus-visible{outline-color:#fff}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+@media (min-width:720px){
+  header{
+    grid-template-columns:auto minmax(0,1fr) auto;
+    grid-template-areas:"logo tag action";
+    column-gap:16px;
+  }
+  header img{height:32px;max-width:none}
+  .tag{font-size:14px;padding-top:2px}
+  .greet{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){
+  .dots span{animation:none;opacity:.75}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <img src="/logo-reversed.png" alt="CoRun.ai" width="120" height="32">
+    <p class="tag">Run your fleet with confidence.</p>
+    <button type="button" id="new">New chat</button>
+  </header>
+  <h1>Chat with Violette</h1>
+  <main id="main">
+    <div class="col">
+      <div class="empty" id="empty">
+        <img src="/logo-site.png" alt="" width="132" height="40">
+        <p class="greet">Hi, I'm Violette from CoRun.ai. How can I help?</p>
+        <div class="chips" role="group" aria-label="Suggested questions">
+          <button type="button">What does CoRun do?</button>
+          <button type="button">How does CoRun help with insurance renewals?</button>
+          <button type="button">Who founded CoRun?</button>
+          <button type="button">How do I get started?</button>
+        </div>
+      </div>
+      <div id="thread" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation" hidden></div>
+    </div>
+  </main>
+  <div class="dock">
+    <form id="f" class="composer">
+      <label class="sr-only" for="q">Message Violette</label>
+      <textarea id="q" rows="1" placeholder="Message Violette" autofocus enterkeyhint="send"></textarea>
+      <button type="submit" id="send" disabled aria-label="Send message">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+      </button>
+    </form>
+    <footer>Violette is an AI assistant. Answers may be imperfect.</footer>
+  </div>
+</div>
 <script>
-const T=document.getElementById('thread'),M=document.getElementById('main'),q=document.getElementById('q'),b=document.getElementById('b');const hist=[];
-function add(role,text){const d=document.createElement('div');d.className='m '+(role==='user'?'u':'a');if(role!=='user'){const n=document.createElement('div');n.className='n';n.textContent='Violette';d.appendChild(n);}
- const s=document.createElement('span');s.textContent=text;d.appendChild(s);T.appendChild(d);M.scrollTop=M.scrollHeight;return s;}
-add('assistant',"Hi, I'm Violette from CoRun.ai. How can I help you today?");
-q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('f').requestSubmit();}});
-q.addEventListener('input',()=>{q.style.height='auto';q.style.height=q.scrollHeight+'px';});
-document.getElementById('f').onsubmit=async e=>{e.preventDefault();const t=q.value.trim();if(!t)return;q.value='';q.style.height='auto';add('user',t);hist.push({role:'user',content:t});
- b.disabled=true;const s=add('assistant','Typing…');s.className='typing';
- try{const call=()=>fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:hist})}).then(r=>r.json());let j;try{j=await call();}catch(e){await new Promise(z=>setTimeout(z,2500));j=await call();}
-  s.className='';s.textContent=j.reply||j.error;if(j.reply){hist.push({role:'assistant',content:j.reply});speak(j.reply);}}catch{s.className='';s.textContent='Connection problem. Please try again.';}
- b.disabled=false;q.focus();};
+const main = document.getElementById('main');
+const empty = document.getElementById('empty');
+const thread = document.getElementById('thread');
+const form = document.getElementById('f');
+const q = document.getElementById('q');
+const sendBtn = document.getElementById('send');
+const hist = [];
+let generation = 0;
+let busy = false;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-let muted=false;const mute=document.getElementById('mute'),mic=document.getElementById('mic'),vn=document.getElementById('vnote');
-function speak(t){try{if(muted||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
-mute.onclick=()=>{muted=!muted;mute.textContent=muted?'🔇':'🔊';mute.title=muted?'Unmute voice replies':'Mute voice replies';if(muted&&window.speechSynthesis)speechSynthesis.cancel();};
-if(!window.speechSynthesis)mute.style.display='none';
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){mic.style.display='none';vn.textContent='Voice input is not supported in this browser. Try Chrome, Edge or Safari, or type your question.';}
-else{const rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=false;let on=false,fin='';
- rec.onstart=()=>{on=true;fin='';mic.classList.add('on');mic.title='Listening… click to stop';vn.textContent='Listening…';if(window.speechSynthesis)speechSynthesis.cancel();};
- rec.onresult=e=>{let i='';for(let k=e.resultIndex;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)fin+=r[0].transcript;else i+=r[0].transcript;}q.value=(fin+i).trim();};
- rec.onerror=e=>{vn.textContent=e.error==='not-allowed'?'Microphone access was blocked. Allow it in your browser to talk.':'Voice input error: '+e.error;};
- rec.onend=()=>{on=false;mic.classList.remove('on');mic.title='Talk to Violette';if(vn.textContent==='Listening…')vn.textContent='';if(q.value.trim())document.getElementById('f').requestSubmit();};
- mic.onclick=()=>{on?rec.stop():rec.start();};}
-</script></body></html>
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function inline(raw){
+  const links = [];
+  const slot = html => { const i = links.length; links.push(html); return '\u0000L' + i + 'L\u0000'; };
+  const anchor = (url, text) => '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '<span class="sr-only"> (opens in a new tab)</span></a>';
+  let s = escapeHtml(raw);
+  s = s.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, (_, text, url) => slot(anchor(url, text)));
+  s = s.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, (_, pre, url) => {
+    let clean = url, trail = '';
+    const cut = clean.match(/[.,;:!?)]+$/);
+    if(cut){ trail = cut[0]; clean = clean.slice(0, -trail.length); }
+    return pre + slot(anchor(clean, clean)) + trail;
+  });
+  s = s.replace(/\*\*([^*\n]+)\*\*|__([^_\n]+)__/g, (_, a, b) => '<strong>' + (a || b) + '</strong>');
+  return s.replace(/\u0000L(\d+)L\u0000/g, (_, i) => links[+i]);
+}
+function renderMarkdown(text){
+  const lines = String(text).replace(/\r\n/g, '\n').split('\n');
+  let html = '', list = null;
+  const close = () => { if(list){ html += '</' + list + '>'; list = null; } };
+  for(const line of lines){
+    const ul = /^\s*[-*]\s+(.+)$/.exec(line);
+    const ol = /^\s*\d+[.)]\s+(.+)$/.exec(line);
+    if(ul || ol){
+      const kind = ul ? 'ul' : 'ol';
+      if(list !== kind){ close(); html += '<' + kind + '>'; list = kind; }
+      html += '<li>' + inline((ul || ol)[1]) + '</li>';
+      continue;
+    }
+    close();
+    if(!line.trim()) continue;
+    html += '<p>' + inline(line) + '</p>';
+  }
+  close();
+  return html;
+}
+function scrollDown(){
+  main.scrollTo({top:main.scrollHeight, behavior:reduceMotion ? 'auto' : 'smooth'});
+}
+function resize(){
+  q.style.height = 'auto';
+  q.style.height = Math.min(q.scrollHeight, 160) + 'px';
+}
+function syncSend(){
+  sendBtn.disabled = busy || !q.value.trim();
+}
+function showThread(){
+  empty.hidden = true;
+  thread.hidden = false;
+}
+function addUser(text){
+  showThread();
+  const row = document.createElement('div');
+  row.className = 'msg user';
+  const bubble = document.createElement('p');
+  bubble.className = 'bubble';
+  const who = document.createElement('span');
+  who.className = 'sr-only';
+  who.textContent = 'You said: ';
+  bubble.append(who, document.createTextNode(text));
+  row.append(bubble);
+  thread.append(row);
+  scrollDown();
+}
+function addAssistant(html, isError){
+  const row = document.createElement('div');
+  row.className = 'msg assistant';
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = 'V';
+  const body = document.createElement('div');
+  body.className = 'body md' + (isError ? ' err' : '');
+  body.innerHTML = '<span class="sr-only">Violette says: </span>' + html;
+  row.append(avatar, body);
+  thread.append(row);
+  scrollDown();
+}
+function setTyping(on){
+  const old = thread.querySelector('.typing');
+  if(old) old.remove();
+  if(!on) return;
+  showThread();
+  const row = document.createElement('div');
+  row.className = 'msg assistant typing';
+  row.setAttribute('role', 'status');
+  row.setAttribute('aria-label', 'Violette is typing');
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = 'V';
+  const dots = document.createElement('div');
+  dots.className = 'dots';
+  dots.setAttribute('aria-hidden', 'true');
+  dots.innerHTML = '<span></span><span></span><span></span>';
+  row.append(avatar, dots);
+  thread.append(row);
+  scrollDown();
+}
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+async function ask(text){
+  const gen = ++generation;
+  busy = true;
+  syncSend();
+  q.value = '';
+  resize();
+  addUser(text);
+  hist.push({role:'user', content:text});
+  setTyping(true);
+  try{
+    const call = () => fetch('/api/chat', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({messages:hist})
+    }).then(r => r.json());
+    let j;
+    try{ j = await call(); }
+    catch(e){
+      await sleep(2500);
+      if(gen !== generation) return;
+      j = await call();
+    }
+    if(gen !== generation) return;
+    setTyping(false);
+    if(j && j.reply){
+      hist.push({role:'assistant', content:j.reply});
+      addAssistant(renderMarkdown(j.reply), false);
+    }else{
+      addAssistant(escapeHtml((j && j.error) || 'Sorry, something went wrong. Please try again.'), true);
+    }
+  }catch(e){
+    if(gen !== generation) return;
+    setTyping(false);
+    addAssistant(escapeHtml('Connection problem. Please try again.'), true);
+  }finally{
+    if(gen === generation){
+      busy = false;
+      syncSend();
+      q.focus();
+    }
+  }
+}
+q.addEventListener('input', () => { resize(); syncSend(); });
+q.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey && !e.isComposing){
+    e.preventDefault();
+    if(!sendBtn.disabled) form.requestSubmit();
+  }
+});
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = q.value.trim();
+  if(!text || busy) return;
+  ask(text);
+});
+document.getElementById('new').addEventListener('click', () => {
+  generation++;
+  busy = false;
+  hist.length = 0;
+  thread.replaceChildren();
+  thread.hidden = true;
+  empty.hidden = false;
+  q.value = '';
+  resize();
+  syncSend();
+  q.focus();
+});
+empty.querySelectorAll('.chips button').forEach(btn => {
+  btn.addEventListener('click', () => { if(!busy) ask(btn.textContent); });
+});
+syncSend();
+</script>
+</body>
+</html>
