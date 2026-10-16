@@ -34,12 +34,12 @@ q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefau
 q.addEventListener('input',()=>{q.style.height='auto';q.style.height=q.scrollHeight+'px';});
 document.getElementById('f').onsubmit=async e=>{e.preventDefault();const t=q.value.trim();if(!t)return;q.value='';q.style.height='auto';add('user',t);hist.push({role:'user',content:t});
  b.disabled=true;const s=add('assistant','Typing…');s.className='typing';
- try{const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:hist})});const j=await r.json();
+ try{const call=()=>fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:hist})}).then(r=>r.json());let j;try{j=await call();}catch(e){await new Promise(z=>setTimeout(z,2500));j=await call();}
   s.className='';s.textContent=j.reply||j.error;if(j.reply){hist.push({role:'assistant',content:j.reply});speak(j.reply);}}catch{s.className='';s.textContent='Connection problem. Please try again.';}
  b.disabled=false;q.focus();};
 
 let muted=false;const mute=document.getElementById('mute'),mic=document.getElementById('mic'),vn=document.getElementById('vnote');
-function speak(t){if(muted||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';speechSynthesis.speak(u);}
+function speak(t){try{if(muted||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';speechSynthesis.speak(u);}catch(e){}}
 mute.onclick=()=>{muted=!muted;mute.textContent=muted?'🔇':'🔊';mute.title=muted?'Unmute voice replies':'Mute voice replies';if(muted&&window.speechSynthesis)speechSynthesis.cancel();};
 if(!window.speechSynthesis)mute.style.display='none';
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
