@@ -164,3 +164,14 @@ def agency_onboarding_page():
 @app.get("/demo", include_in_schema=False)
 def demo_page():
     return FileResponse(_static / "index.html")
+
+
+# ---- sales landing pages (test, noindex) ----
+@app.get("/sales/carriers", include_in_schema=False)
+def sales_carriers_page():
+    return FileResponse(_static / "sales" / "carriers.html")
+
+
+@app.get("/sales/agencies", include_in_schema=False)
+def sales_agencies_page():
+    return FileResponse(_static / "sales" / "agencies.html")
