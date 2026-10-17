@@ -139,7 +139,8 @@ def insurer_search(name: str = Query(..., min_length=3), limit: int = Query(100,
 
 # ---- demo page ----
 from pathlib import Path
-from fastapi.responses import FileResponse
+from fastapi import Request
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 _static = Path(__file__).parent / "static"
@@ -175,3 +176,21 @@ def sales_carriers_page():
 @app.get("/sales/agencies", include_in_schema=False)
 def sales_agencies_page():
     return FileResponse(_static / "sales" / "agencies.html")
+
+
+# ---- campaign landing (test host, noindex) ----
+# Mounted on /go/assets only, after the page routes above, so it cannot shadow them.
+app.mount("/go/assets", StaticFiles(directory=_static / "go" / "assets"), name="go-assets")
+
+
+@app.get("/go", include_in_schema=False)
+def go_redirect(request: Request):
+    target = "/go/"
+    if request.url.query:
+        target += "?" + request.url.query
+    return RedirectResponse(url=target, status_code=307)
+
+
+@app.get("/go/", include_in_schema=False)
+def go_page():
+    return FileResponse(_static / "go" / "index.html")
