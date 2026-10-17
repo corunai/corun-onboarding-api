@@ -194,3 +194,28 @@ def go_redirect(request: Request):
 @app.get("/go/", include_in_schema=False)
 def go_page():
     return FileResponse(_static / "go" / "index.html")
+
+
+# ---- insurance agency page with Violette onboarding assistant (test host, noindex) ----
+# Mounted on /agents/assets only, after the page routes above, so it cannot shadow them.
+app.mount("/agents/assets", StaticFiles(directory=_static / "agents" / "assets"), name="agents-assets")
+
+
+@app.get("/agents", include_in_schema=False)
+def agents_redirect(request: Request):
+    target = "/agents/"
+    if request.url.query:
+        target += "?" + request.url.query
+    return RedirectResponse(url=target, status_code=307)
+
+
+@app.get("/agents/", include_in_schema=False)
+def agents_page():
+    return FileResponse(_static / "agents" / "index.html")
+
+
+@app.get("/agents/content.json", include_in_schema=False)
+def agents_content():
+    # no-cache so content.json edits show up on the next page load
+    return FileResponse(_static / "agents" / "content.json", media_type="application/json",
+                        headers={"Cache-Control": "no-cache"})

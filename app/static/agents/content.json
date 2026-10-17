@@ -1,0 +1,229 @@
+{
+  "_readme": "CoRun.ai agency page content. Edit text here only; no code changes needed. Rules: always write CoRun.ai; no pricing, no metrics, no customer names, no promises about premiums. HubSpot IDs and links live in the CONFIG block at the top of index.html, not here.",
+  "settings": {
+    "defaultScenario": "renewal",
+    "leadSourcePrefix": "agencies-",
+    "assistantName": "Violette",
+    "assistantRole": "CoRun.ai onboarding assistant"
+  },
+  "shared": {
+    "nav": [
+      {
+        "label": "How it works",
+        "href": "#how"
+      },
+      {
+        "label": "Questions",
+        "href": "#faq"
+      }
+    ],
+    "pills": [
+      "You keep your advisory role",
+      "Fleet-approved data only"
+    ],
+    "howTitle": "How it works",
+    "how": [
+      {
+        "title": "Tell us about your agency",
+        "text": "Answer a few quick questions with the onboarding assistant. It takes about a minute."
+      },
+      {
+        "title": "Talk to the CoRun.ai team",
+        "text": "A short conversation about your fleet clients and how renewal preparation works in CoRun.ai."
+      },
+      {
+        "title": "Work with your fleet clients",
+        "text": "Each fleet decides what to share. Your agency sees only the information the fleet approves."
+      }
+    ],
+    "timelineTitle": "The 90/60/30-day renewal timeline",
+    "timeline": [
+      {
+        "when": "90 days",
+        "text": "Confirm the renewal date, review available records, identify gaps and assign owners."
+      },
+      {
+        "when": "60 days",
+        "text": "Resolve missing information and document completed corrective actions."
+      },
+      {
+        "when": "30 days",
+        "text": "Assemble the available package for fleet review and approval before it is shared with you."
+      },
+      {
+        "when": "Through renewal",
+        "text": "Track follow-up requests and material changes. Your agency manages the submission and placement."
+      }
+    ],
+    "faqTitle": "Questions",
+    "faq": [
+      {
+        "q": "Does CoRun.ai replace the insurance agent?",
+        "a": "No. Your agency leads insurance advice, market selection and placement. CoRun.ai supports the information and follow-up behind those decisions."
+      },
+      {
+        "q": "What can my agency see?",
+        "a": "Only the information each fleet client has authorized and approved."
+      },
+      {
+        "q": "Will CoRun.ai lower my clients' premiums?",
+        "a": "Insurers decide pricing. CoRun.ai helps fleets organize records and follow through on risk-related actions before renewal. Savings are not guaranteed."
+      }
+    ],
+    "privacyLine": "By submitting, you agree to be contacted by the CoRun.ai team about CoRun.ai.",
+    "footer": "CoRun.ai · Mountain View, California",
+    "signoff": "Driven by intelligence. Built around people.",
+    "errorText": "Something went wrong. Please try again, or email nm@corun.ai.",
+    "skipLink": "Skip to the onboarding assistant",
+    "pageTitleSuffix": " | CoRun.ai"
+  },
+  "scenarios": {
+    "renewal": {
+      "label": "Renewal prep",
+      "eyebrow": "FOR INSURANCE AGENTS · RENEWAL PREPARATION",
+      "headline": "Help your fleet clients walk into renewal prepared.",
+      "subhead": "CoRun.ai helps your trucking clients start renewal preparation 90 days ahead, so records, owners and open items are organized well before the deadline.",
+      "benefitsTitle": "What your agency gets",
+      "benefits": [
+        {
+          "title": "Start renewal conversations earlier",
+          "text": "Use the 90/60/30-day process to find gaps, coordinate follow-up and give your team more time to prepare the submission."
+        },
+        {
+          "title": "Less time chasing paperwork",
+          "text": "Track missing records, responsible owners and preparation status in one authorized workspace."
+        },
+        {
+          "title": "A clearer story for underwriters",
+          "text": "Bring together fleet-approved records, relevant safety information and documented corrective actions."
+        }
+      ],
+      "cta": "Start with the assistant",
+      "bandTitle": "Give your fleet clients a clearer path to renewal.",
+      "assistant": {
+        "greeting": "Hi, I'm Violette. I'll help you get started with renewal preparation for your fleet clients. It takes about a minute.",
+        "formPrompt": "Tell me a little about your agency and I'll pass it to the CoRun.ai team."
+      }
+    },
+    "between-renewals": {
+      "label": "Between renewals",
+      "eyebrow": "FOR INSURANCE AGENTS · YEAR-ROUND CLIENT SUPPORT",
+      "headline": "Give your fleet clients more value between renewals.",
+      "subhead": "CoRun.ai connects year-round fleet follow-up with renewal preparation, so your client conversations are useful all year, not only at renewal time.",
+      "benefitsTitle": "Stay connected all year",
+      "benefits": [
+        {
+          "title": "More reasons to stay in touch",
+          "text": "Use documented progress and open priorities to make client conversations useful between renewals."
+        },
+        {
+          "title": "Progress your clients can see",
+          "text": "Fleet clients keep an organized record of the actions they took, supported by available records and fleet-approved summaries."
+        },
+        {
+          "title": "A practical service to offer",
+          "text": "Connect everyday fleet management with renewal preparation, and give clients a visible reason to value your agency's ongoing service."
+        }
+      ],
+      "cta": "Start with the assistant",
+      "bandTitle": "Make every client conversation more useful.",
+      "assistant": {
+        "greeting": "Hi, I'm Violette. I'll help you see how CoRun.ai supports your fleet clients between renewals. It takes about a minute.",
+        "formPrompt": "A few quick questions, then the CoRun.ai team will follow up."
+      }
+    },
+    "partner": {
+      "label": "Become a partner",
+      "eyebrow": "FOR INSURANCE AGENCIES · AGENCY PARTNERS",
+      "headline": "Stronger fleet clients. Better-prepared renewals.",
+      "subhead": "Bring CoRun.ai to your trucking clients. Your agency keeps its advisory role, and each fleet stays in control of what it shares.",
+      "benefitsTitle": "How partnering works",
+      "benefits": [
+        {
+          "title": "Partner inquiry",
+          "text": "Tell us about your agency and your trucking clients. The onboarding assistant collects the basics."
+        },
+        {
+          "title": "Program review",
+          "text": "The CoRun.ai team talks with you about how renewal preparation works for your clients."
+        },
+        {
+          "title": "Agency onboarding",
+          "text": "Set up your agency workspace. Referral attribution never grants access to a fleet's data."
+        }
+      ],
+      "cta": "Become an Agency Partner",
+      "bandTitle": "You bring the fleet. We bring the tech.",
+      "assistant": {
+        "greeting": "Hi, I'm Violette. I'll walk you through the first step of becoming a CoRun.ai agency partner.",
+        "formPrompt": "Answer a few questions and I'll start your partner inquiry."
+      }
+    }
+  },
+  "assistantSteps": [
+    {
+      "id": "role",
+      "ask": "First, what's your role at the agency?",
+      "type": "choice",
+      "options": [
+        "Agency owner or principal",
+        "Producer or account manager",
+        "Other"
+      ]
+    },
+    {
+      "id": "agency",
+      "ask": "What's your agency's name?",
+      "type": "text",
+      "placeholder": "Smith Insurance Group"
+    },
+    {
+      "id": "clients",
+      "ask": "How many trucking clients does your agency work with?",
+      "type": "choice",
+      "options": [
+        "1–9",
+        "10–24",
+        "25–49",
+        "50+"
+      ]
+    },
+    {
+      "id": "usdot",
+      "ask": "Optional: add one client's USDOT number. In agency onboarding you can look up public FMCSA records for your book.",
+      "type": "text",
+      "placeholder": "USDOT number",
+      "optional": true
+    },
+    {
+      "id": "contact",
+      "ask": "Last step: how should the CoRun.ai team reach you?",
+      "type": "contact"
+    }
+  ],
+  "assistantDone": {
+    "title": "Thanks! Your details are with the CoRun.ai team.",
+    "text": "The team will reach out to set up a conversation. You can also continue to agency onboarding now.",
+    "primary": "Continue to agency onboarding",
+    "secondary": "Ask Violette a question"
+  },
+  "assistantLabels": {
+    "next": "Next",
+    "skip": "Skip",
+    "send": "Send",
+    "sending": "Sending…",
+    "namePlaceholder": "Full name",
+    "contactPlaceholder": "Work email or phone",
+    "nameError": "Please enter your full name.",
+    "contactError": "Please enter a valid work email or phone number.",
+    "usdotError": "Please enter digits only, up to 8.",
+    "textError": "Please enter an answer.",
+    "summaryTitle": "Sent to the CoRun.ai team:",
+    "summaryRole": "Role",
+    "summaryAgency": "Agency",
+    "summaryClients": "Trucking clients",
+    "summaryUsdot": "Client USDOT",
+    "summaryContact": "Contact",
+    "skipped": "Skipped"
+  }
+}
